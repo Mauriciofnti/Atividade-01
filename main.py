@@ -53,7 +53,7 @@ class MenuPrincipal():
             case 10:
                 from classes.postocombustivel import BombaCombustivel
                 novaBomba = BombaCombustivel()
-                novaBomba.menuBomba()
+                novaBomba.menuPosto()
             case _:
                 print("\n***Digite um valor válido...***\n")
                 self.opcaoPrincipal()

@@ -106,12 +106,26 @@ class BombaCombustivel():
         # print("Valor alteradooo")
         
         
-    def alterarCombustivel(self, combustivel):
-        self.tipoCombustivel = combustivel
+    def alterarCombustivel(self):
+        self.banner()
+        combustivel = self.procuraComb("alterado")
+        if combustivel:
+            novaQtd = input(f"Informe a nova quantidade do tanque de {combustivel}")
+            self.tanque[combustivel] = int(novaQtd)
+        else:
+            return
         
-    def alterarQuantidadeCombustivel(self, quantidade, tipo):
-        self.tanque[tipo] -= quantidade
-        print(f"Quantidade do tanque da bomba de {tipo}: {self.tanque[tipo]}")
+        
+    def alterarQuantidadeCombustivel(self):
+        self.banner()
+        combustivel = self.procuraComb("alterado")
+        if combustivel:
+            novaQtd = input(f"Informe a nova quantidade do tanque de {combustivel}: ")
+            self.tanque[combustivel] = float(novaQtd)
+            print(f"Quantidade do tanque da bomba de {combustivel} alterado para: {self.tanque[combustivel]} litros.")
+        else:
+            return
+        time.sleep(2)     
 
     def banner(self):
         print("\n************POSTO DO DOUTOR PC************\n\nCombustivel:                 Tanque:")
@@ -130,7 +144,7 @@ class BombaCombustivel():
                  "| 1 - Abastecer por valor $.              |\n"
                  "| 2 - Abastecer por litros.               |\n"
                  "| 3 - Alterar valor.                      |\n"
-                 "| 4 - Alterar combustivel.                |\n"
+                 "| 4 - Alterar combustivel.(off)           |\n"
                  "| 5 - Alterar quantidade de combustivel.  |\n"
                  "| 0 - Sair.                               |\n"
                 )
@@ -144,11 +158,19 @@ class BombaCombustivel():
             case 3:
                 self.alteraValor()
                 self.menuPosto()
-            case 4:
-                self.alteraidade()
-                self.menuTama()
+            # case 4:
+            #     self.alteraidade()
+            #     self.menuTama()
+            case 5:
+                self.alterarQuantidadeCombustivel()
+                self.menuPosto()
             case 0:
                 self.volta()
+            case _:
+                print("\n***Digite um valor válido...***\n")
+                self.opcaoPrincipal()
     
-carro = BombaCombustivel()
-carro.menuPosto()
+    def volta(self):
+        from main import MenuPrincipal
+        volta = MenuPrincipal()
+        volta.opcaoPrincipal()
