@@ -93,6 +93,7 @@ class Tamagushi():
                 self.menuTama()
             case 0:
                 self.volta()
+                
     def volta(self):
         from main import MenuPrincipal
         volta = MenuPrincipal()
