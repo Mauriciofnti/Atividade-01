@@ -28,6 +28,7 @@ class ContaCorrente():
                  "| 1 - Alterar Nome.               |\n"
                  "| 2 - Depositar.                  |\n"
                  "| 3 - Sacar.                      |\n"
+                 "| 0 - Sair.                       |\n"
                 )
         match int(option):
             case 1:

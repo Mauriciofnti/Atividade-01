@@ -12,30 +12,41 @@ class MenuPrincipal():
                            "| 3 - Classe Retangulo.     |\n"
                            "| 4 - Classe Pessoa.        |\n"
                            "| 5 - Classe ContaCorrente. |\n"
+                           "| 6 - Classe Teve.          |\n"
+                           "| 7 - Classe Tamagushi.     |\n"
                            "|---------------------------|\n"
                            )
         match int(self.opcao):
             case 1:
-                from bola import Bola
+                from classes.bola import Bola
                 novaBola = Bola()
                 novaBola.menuBola()
             case 2:
-                from quadrado import Quadrado
+                from classes.quadrado import Quadrado
                 novoQuad = Quadrado()
                 novoQuad.menuQuad()
             case 3:
-                from retangulo import Retangulo
+                from classes.retangulo import Retangulo
                 ladoA = input("Informe o valor da base do retangulo em metros: ")
                 ladoB = input("Informe o valor da altura do retangulo em metros: ")
                 novoReta = Retangulo(ladoA, ladoB)
                 novoReta.menuRetang()
             case 5:
-                from contacorrente import ContaCorrente
+                from classes.contacorrente import ContaCorrente
                 num = input("Informe o número da conta corrente: ")
                 nome = input("Informe o nome do proprietário da conta: ")
                 novaConta = ContaCorrente(num, nome)
                 print("\n")
                 novaConta.menuConta()
+            case 6:
+                from classes.teve import Teve
+                novaTeve = Teve()
+                novaTeve.menuTeve()
+            case 7:
+                from classes.tamagushi import Tamagushi
+                nome = input("Informe o nome do Tamagushi: ")
+                novoTama = Tamagushi(nome)
+                novoTama.menuTama()
             case _:
                 print("\n***Digite um valor válido...***\n")
                 self.opcaoPrincipal()

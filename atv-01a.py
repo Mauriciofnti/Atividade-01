@@ -1,7 +1,7 @@
 # • Classe Bola: Crie uma classe que modele uma bola:
 # a. Atributos: Cor, circunferência, material
 # b. Métodos: trocaCor e mostraCor
-from bola import NovaBola
+from classes.bola import NovaBola
 
 opcao = input("Olá, informe qual opcão de classe você deseja testar: ")
 
