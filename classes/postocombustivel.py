@@ -50,7 +50,14 @@ class BombaCombustivel():
         print(f"Foram abastecidos: {total:.3f} litros de {tipo}")
         self.atualizaTanque(tipo, total)
         time.sleep(2)
-
+    
+    def confereTanque(self, tipo, qtd):
+        if qtd > self.tanque[tipo]:
+            print(f"Quantidade no tanque insuficiente. Quantidade atual: {self.tanque[tipo]}.")
+            return False
+        else:
+            return True
+    
     def abastecerPorLitro(self):
         self.banner()
         tipo = self.procuraComb("abastecido")

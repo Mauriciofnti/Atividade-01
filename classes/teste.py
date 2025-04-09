@@ -20,47 +20,48 @@ class BombaCombustivel():
     def __init__(self):
         self.tipoCombustivel = ["1-Gasoli", "2-Etanol", "3-Diesel"]
         self.combListName = {"1":"gasolina", "2":"etanol", "3":"diesel"}
-        self.valorLitro = [5.54, 4.49, 5.99]
+        self.__valorLitro = [5.54, 4.49, 5.99]
         self.quantidadeCombustivel = [1000, 1000, 1000]
         self.tanque = dict(zip(self.tipoCombustivel, self.quantidadeCombustivel))
-        self.precos = dict(zip(self.tipoCombustivel, self.valorLitro))
+        self.precos = dict(zip(self.tipoCombustivel, self.__valorLitro))
         self.nome_exibicao = dict(zip(self.combListName.values(), self.tipoCombustivel))
     
     def abastercerPorValor(self):     
         self.banner()
-        tipo = self.procuraComb("abastecido")   
-        # comb = input("Informe o nome ou número do combustivel a ser abastecido: \n").strip().lower()
-
-        # if comb not in self.combListName and comb.lower() not in self.combListName.values():
-        #     print("Informe o combustivel correto.")
-        #     return
-        # else:
-        #     tipo = "Agua"
-        #     if comb in self.combListName.keys():
-        #         tipo = self.nome_exibicao[self.combListName[comb]]
-        #     elif comb in self.combListName.values():
-        #         tipo = self.nome_exibicao[comb]
-        #     else:
-        #         print("error")
-                
-        #     # print(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}")
-        valor = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme o valor de combustivel a ser abastecido em R$:")
-        total = int(valor) / self.precos[tipo]
         
-        print(f"Foram abastecidos: {total:.3f} litros de {tipo}")
-        self.atualizaTanque(tipo, total)
-        time.sleep(2)
-
+        tipo = self.procuraComb("abastecido")   
+        
+        if tipo:
+            valor = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme o valor de combustivel a ser abastecido em R$:")
+            total = int(valor) / self.precos[tipo]
+            
+            print(f"Foram abastecidos: {total:.3f} litros de {tipo}")
+            self.atualizaTanque(tipo, total)
+            time.sleep(2)
+        else:
+            return
+    
+    def confereTanque(self, tipo, qtd):
+        if qtd > self.tanque[tipo]:
+            print(f"Quantidade no tanque insuficiente. Quantidade atual: {self.tanque[tipo]}.")
+            time.sleep(2)
+            return False
+        else:
+            return True
+    
     def abastecerPorLitro(self):
         self.banner()
         tipo = self.procuraComb("abastecido")
-        # comb = input("Informe o nome ou número do combustivel ser abastecido: ")          
-        litros = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme a quantidade de litros a ser abastecida:")
-
-        total = int(litros) * self.precos[tipo]
-        print(f"Foram abastecidos {litros} litros de {tipo} pelo valor de R${total:.2f}.")
-        time.sleep(2)
-        self.atualizaTanque(tipo, float(litros))
+        # comb = input("Informe o nome ou número do combustivel ser abastecido: ")   
+        if tipo:                   
+            litros = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme a quantidade de litros a ser abastecida:")
+            if self.confereTanque(tipo, float(litros)):                
+                total = int(litros) * self.precos[tipo]
+                print(f"Foram abastecidos {litros} litros de {tipo} pelo valor de R${total:.2f}.")
+                time.sleep(2)
+                self.atualizaTanque(tipo, float(litros))
+        else:
+            return
     
     def atualizaTanque(self, comb, litros):
         self.tanque[comb] -= litros
@@ -71,7 +72,7 @@ class BombaCombustivel():
         if comb not in self.combListName and comb.lower() not in self.combListName.values():
             print("Informe o combustivel correto.")
             time.sleep(2)
-            return
+            return False
         else:
             tipoDeComb = "Agua"
             if comb in self.combListName.keys():
@@ -106,15 +107,29 @@ class BombaCombustivel():
         # print("Valor alteradooo")
         
         
-    def alterarCombustivel(self, combustivel):
-        self.tipoCombustivel = combustivel
+    def alterarCombustivel(self):
+        self.banner()
+        combustivel = self.procuraComb("alterado")
+        if combustivel:
+            novaQtd = input(f"Informe a nova quantidade do tanque de {combustivel}")
+            self.tanque[combustivel] = int(novaQtd)
+        else:
+            return
         
-    def alterarQuantidadeCombustivel(self, quantidade, tipo):
-        self.tanque[tipo] -= quantidade
-        print(f"Quantidade do tanque da bomba de {tipo}: {self.tanque[tipo]}")
+        
+    def alterarQuantidadeCombustivel(self):
+        self.banner()
+        combustivel = self.procuraComb("alterado")
+        if combustivel:
+            novaQtd = input(f"Informe a nova quantidade do tanque de {combustivel}: ")
+            self.tanque[combustivel] = float(novaQtd)
+            print(f"Quantidade do tanque da bomba de {combustivel} alterado para: {self.tanque[combustivel]} litros.")
+        else:
+            return
+        time.sleep(2)     
 
     def banner(self):
-        print("\n************POSTO DO DOUTOR PC************\n\nCombustivel:                 Tanque:")
+        print("\n************POSTO DO DOUTOR PC************\n\nCombustivel:                   Tanque:")
         print(*[
                     f"{comb}: R$ {self.precos[comb]:.2f} |            {self.tanque[comb]:.2f} litros"
                     for comb in self.tipoCombustivel
@@ -130,7 +145,7 @@ class BombaCombustivel():
                  "| 1 - Abastecer por valor $.              |\n"
                  "| 2 - Abastecer por litros.               |\n"
                  "| 3 - Alterar valor.                      |\n"
-                 "| 4 - Alterar combustivel.                |\n"
+                 "| 4 - Alterar combustivel.(off)           |\n"
                  "| 5 - Alterar quantidade de combustivel.  |\n"
                  "| 0 - Sair.                               |\n"
                 )
@@ -144,11 +159,22 @@ class BombaCombustivel():
             case 3:
                 self.alteraValor()
                 self.menuPosto()
-            case 4:
-                self.alteraidade()
-                self.menuTama()
+            # case 4:
+            #     self.alteraidade()
+            #     self.menuTama()
+            case 5:
+                self.alterarQuantidadeCombustivel()
+                self.menuPosto()
             case 0:
                 self.volta()
+            case _:
+                print("\n***Digite um valor válido...***\n")
+                self.opcaoPrincipal()
+    
+    def volta(self):
+        from main import MenuPrincipal
+        volta = MenuPrincipal()
+        volta.opcaoPrincipal()
     
 carro = BombaCombustivel()
 carro.menuPosto()
