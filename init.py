@@ -8,7 +8,8 @@ class Init():
         self.conta = False
         self.teve = Teve()
         self.tamagushi = {}
-        self.macaco = {0:Macaco("Bob"), 1:Macaco("Bobão")}
+        self.macaco = {}
+        self.posto = BombaCombustivel()
         
         self.opcaoPrincipal()
         
@@ -79,14 +80,46 @@ class Init():
                         self.tamagushi[nome] = Tamagushi(nome, self.tamagushi)
                         self.tamagushi[nome].menuTama()
                 case 8:
-                    print(self.macaco[0].nome)
-                    for i in self.macaco.keys():
-                        print(f"Você possui o macaco: {self.macaco[i].nome}")
-                    self.macaco[0].menuMacaco()
+                    # print(self.macaco[0].nome)
+                    print(list(self.macaco.keys()))
+                    
+                    if len(self.macaco) == 0:
+                        nomeMacaco = input("Informe o nome do novo macaco: ")
+                        self.macaco[nomeMacaco] = Macaco(nomeMacaco, self.macaco)
+                        
+                        self.macaco[nomeMacaco].menuMacaco()
+                    elif len(self.macaco) == 1:
+
+                        print(f"Você possui o macaco: {list(self.macaco.keys())[0]}")
+                        option = input("Informe a opção:\n 1-Acessar macaco\n2-Criar macaco\n3-Deletar macaco")
+                        match int(option):
+                            case 1:
+                                self.macaco[list(self.macaco.keys())[0]].menuMacaco()                                    
+                            case 2:
+                                nome = input("Informe o nome do novo macaco: ")
+                                self.macaco[nome] = Macaco(nome, self.macaco)
+                                self.macaco[nome].menuMacaco()
+                            case 3:
+                                nome = input("Informe o nome do macaco a ser deletado: ")
+                                del self.macaco[nome]
+                                print(self.macaco)
+                                time.sleep(2)
+                                self.opcaoPrincipal()
+                                
+                        
+
+                    else:
+                        for i in list(self.macaco.keys()):
+                            print(f"Você possui o macaco: {i}")
+                        mac = input(f"Informe o nome do macaco a ser escolhido: ")
+                        if mac in list(self.macaco.keys()):
+                            self.macaco[mac].menuMacaco()
+                        else:
+                            print("Nome não encontrado...")
+                        
+                    # self.macaco[0].menuMacaco()
                 case 10:
-                    from classes.postocombustivel import BombaCombustivel
-                    novaBomba = BombaCombustivel()
-                    novaBomba.menuPosto()
+                    self.posto.menuPosto()
                 case 00:
                     from main import MenuPrincipal
                     MenuPrincipal().opcaoPrincipal()
@@ -465,9 +498,14 @@ class Tamagushi():
                     return
 
 class Macaco():
-    def __init__(self, nome):
+    def __init__(self, nome, ref):
         self.nome = nome
+        self.ref = ref
         self.bucho = []
+
+    def deletarMacaco(self):
+        if self.nome in list(self.ref):
+            del self.ref[self.nome]        
     
     def comer(self, comida):
         self.bucho.append(comida)
@@ -481,38 +519,180 @@ class Macaco():
     
     def menuMacaco(self):
         while True:
-            print(f"Você possui um macaco de nome {self.nome},"
-                  " com circunfêrencia de {self.circunferencia} cm e de um material {self.material}.")
+            print(f"Você possui um macaco de nome {self.nome}.")
+                  
             option = input(
-                            "|** Informe a opção desejada: |\n"
-                            "| 1 - Mudar a cor da bola.    |\n"
-                            "| 2 - Mostrar a cor da bola.  |\n"
-                            "| 0 - Voltar ao menu anterior.|\n"
+                            "|** Informe a opção desejada:  |\n"
+                            "| 1 - Comer.                   |\n"
+                            "| 2 - Ver Bucho.               |\n"
+                            "| 3 - Digerir.                 |\n"
+                            "| 4 - Deletar.                 |\n"
+                            "| 0 - Voltar ao menu anterior. |\n"
             )
             match int(option):
                 case 1:
-                    novaCor =  input("Informe a nova cor da bola:")
-                    self.trocaCor(novaCor)
-                    self.mostraCor()
-                    self.menuBola()
-                    return
+                    comida = input("Informe a comida: \n1-Maçã\n2-Banana\n3")
+                    self.comer("")
+                    
                 case 2:
-                    self.mostraCor()  
-                    self.menuBola() 
+                    self.verBucho()
                     return             
+                case 3:
+                    self.digerir()
+                case 4:
+                    self.deletarMacaco()
+                    return
                 case 0:
-                    # self.opcaoPrincipal()
-                    # Init().opcaoPrincipal() 
-                    return        
+                    return                    
 
-# macaco1 = Macaco("bob")
-# macaco1.comer("banana")
-# macaco1.comer("maça")
-# macaco1.comer("pedra")
-# macaco1.digerir()
+class BombaCombustivel():
+    def __init__(self):
+        self.tipoCombustivel = ["1-Gasoli", "2-Etanol", "3-Diesel"]
+        self.combListName = {"1":"gasolina", "2":"etanol", "3":"diesel"}
+        self.valorLitro = [5.54, 4.49, 5.99]
+        self.quantidadeCombustivel = [1000, 1000, 1000]
+        self.tanque = dict(zip(self.tipoCombustivel, self.quantidadeCombustivel))
+        self.precos = dict(zip(self.tipoCombustivel, self.valorLitro))
+        self.nome_exibicao = dict(zip(self.combListName.values(), self.tipoCombustivel))
+    
+    def abastercerPorValor(self):     
+        self.banner()
+        tipo = self.procuraComb("abastecido")           
+        valor = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme o valor de combustivel a ser abastecido em R$:")        
+        total = int(valor) / self.precos[tipo]
+        if self.confereTanque(tipo, total):        
+            print(f"Foram abastecidos: {total:.3f} litros de {tipo}")
+            self.atualizaTanque(tipo, total)
+            time.sleep(2)
+        else:
+            return
+    
+    def abastecerPorLitro(self):
+        self.banner()
+        tipo = self.procuraComb("abastecido")        
+        litros = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme a quantidade de litros a ser abastecida:")
+        total = int(litros) * self.precos[tipo]
+        if self.confereTanque(tipo, litros):
+            print(f"Foram abastecidos {litros} litros de {tipo} pelo valor de R${total:.2f}.")
+            time.sleep(2)
+            self.atualizaTanque(tipo, float(litros))
+        else:
+            return
+    
+    def confereTanque(self, tipo, qtd):
+        if int(qtd) > self.tanque[tipo]:
+            print(f"\nQuantidade no tanque insuficiente. Quantidade atual: {self.tanque[tipo]}.")
+            time.sleep(2)
+            return False
+        else:
+            return True
+    
 
-# macaco2 = Macaco("bobao")
-# macaco2.comer(macaco1)
+    def atualizaTanque(self, comb, litros):
+        self.tanque[comb] -= litros
+        
+    def procuraComb(self, text):
+        comb = input(f"Informe o nome ou número do combustivel a ser {text}: \n").strip().lower()
+
+        if comb not in self.combListName and comb.lower() not in self.combListName.values():
+            print("Informe o combustivel correto.")
+            time.sleep(2)
+            return
+        else:
+            tipoDeComb = "Agua"
+            if comb in self.combListName.keys():
+                tipoDeComb = self.nome_exibicao[self.combListName[comb]]
+            elif comb in self.combListName.values():
+                tipoDeComb = self.nome_exibicao[comb]
+            else:
+                print("error")
+            return tipoDeComb
+            # print(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}")
+            # valor = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme o valor de combustivel a ser abastecido em R$:")
+            # total = int(valor) / self.precos[tipo]
+            
+            # print(f"Foram abastecidos: {total:.3f} litros de {tipo}")
+            # self.atualizaTanque(tipo, total)
+            # time.sleep(2)
+        
+    def alteraValor(self):
+        self.banner()
+        tipo = self.procuraComb("alterado")
+        if tipo:            
+            novoValor = input(f"Informe o novo valor de {tipo}: ")
+            self.precos[tipo] = int(novoValor)
+            print(f"Valor de {tipo} foi alterado para R${novoValor} por litro")        
+        else:
+            return
+        
+        time.sleep(2)
+
+        # print(str(self.precos))
+        # print(tipo)
+        # print("Valor alteradooo")
+        
+        
+    def alterarCombustivel(self):
+        self.banner()
+        combustivel = self.procuraComb("alterado")
+        if combustivel:
+            novaQtd = input(f"Informe a nova quantidade do tanque de {combustivel}")
+            self.tanque[combustivel] = int(novaQtd)
+        else:
+            return
+        
+        
+    def alterarQuantidadeCombustivel(self):
+        self.banner()
+        combustivel = self.procuraComb("alterado")
+        if combustivel:
+            novaQtd = input(f"Informe a nova quantidade do tanque de {combustivel}: ")
+            self.tanque[combustivel] = float(novaQtd)
+            print(f"Quantidade do tanque da bomba de {combustivel} alterado para: {self.tanque[combustivel]} litros.")
+        else:
+            return
+        time.sleep(2)     
+
+    def banner(self):
+        print("\n************POSTO DO DOUTOR PC************\n\nCombustivel:                 Tanque:")
+        print(*[
+                    f"{comb}: R$ {self.precos[comb]:.2f} |            {self.tanque[comb]:.2f} litros"
+                    for comb in self.tipoCombustivel
+                ], sep="\n"
+              )
+        print("")
+
+    def menuPosto(self):
+        self.banner()
+        
+        option = input(
+                 "|** Informe a opção desejada:             |\n"
+                 "| 1 - Abastecer por valor $.              |\n"
+                 "| 2 - Abastecer por litros.               |\n"
+                 "| 3 - Alterar valor.                      |\n"
+                 "| 4 - Alterar combustivel.(off)           |\n"
+                 "| 5 - Alterar quantidade de combustivel.  |\n"
+                 "| 0 - Sair.                               |\n"
+                )
+        match int(option):
+            case 1:
+                self.abastercerPorValor()
+                self.menuPosto()                
+            case 2:
+                self.abastecerPorLitro()
+                self.menuPosto()
+            case 3:
+                self.alteraValor()
+                self.menuPosto()            
+            case 5:
+                self.alterarQuantidadeCombustivel()
+                self.menuPosto()
+            case 0:
+                return
+            case _:
+                print("\n***Digite um valor válido...***\n")
+                self.menuPosto()
+
 
 if __name__ == "__main__":
     Init(Bola())
