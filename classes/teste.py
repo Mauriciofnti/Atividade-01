@@ -16,7 +16,7 @@
 # combustível total na bomba.
 import time
 
-class BombaCombustivel():
+class BombaTeste():
     def __init__(self):
         self.tipoCombustivel = ["1-Gasoli", "2-Etanol", "3-Diesel"]
         self.combListName = {"1":"gasolina", "2":"etanol", "3":"diesel"}
@@ -166,15 +166,17 @@ class BombaCombustivel():
                 self.alterarQuantidadeCombustivel()
                 self.menuPosto()
             case 0:
-                self.volta()
+                # self.volta()
+                return
             case _:
                 print("\n***Digite um valor válido...***\n")
                 self.opcaoPrincipal()
     
     def volta(self):
-        from main import MenuPrincipal
-        volta = MenuPrincipal()
-        volta.opcaoPrincipal()
-    
-carro = BombaCombustivel()
-carro.menuPosto()
+        # from main import MenuPrincipal
+        # volta = MenuPrincipal()
+        # volta.opcaoPrincipal()
+        self.opcaoPrincipal()
+        
+# carro = BombaCombustivel()
+# carro.menuPosto()
