@@ -17,6 +17,9 @@ class MenuPrincipal():
                            "| 8 - Classe Macaco(off).           |\n"
                            "| 9 - Classe Ponto(off).            |\n"
                            "| 10 - Classe Posto de Combustível. |\n"
+                           "| 11 - Classe Carro.(off)           |\n"
+                           "| 12 - Classe Conta Investimento.   |\n"
+                           "| 13 - Classe Funcionáro.           |\n"
                            "|-----------------------------------|\n"
                            )
         match int(self.opcao):
@@ -54,9 +57,23 @@ class MenuPrincipal():
                 from classes.postocombustivel import BombaCombustivel
                 novaBomba = BombaCombustivel()
                 novaBomba.menuPosto()
+<<<<<<< HEAD
             case 00:
                 from init import Init
                 Init().opcaoPrincipal()
+=======
+            case 12:
+                from classes.contacorrente import ContaCorrente
+                numConta = input("Informe o número da conta do correntista: ")
+                nomeConta = input("Informe o nome do correntista:" )
+                novaConta = ContaCorrente(numConta, nomeConta)
+                novaConta.menuConta()
+            case 13:
+                from classes.funcionario import Funcionario
+                func = Funcionario("Paulo Cesar")
+                func.menuFuncionario()
+
+>>>>>>> 70462818c6bea649b5382fdf0aaf4cbb23d5e89d
             case _:
                 print("\n***Digite um valor válido...***\n")
                 self.opcaoPrincipal()

@@ -28,47 +28,37 @@ class BombaCombustivel():
     
     def abastercerPorValor(self):     
         self.banner()
-        tipo = self.procuraComb("abastecido")   
-        # comb = input("Informe o nome ou número do combustivel a ser abastecido: \n").strip().lower()
-
-        # if comb not in self.combListName and comb.lower() not in self.combListName.values():
-        #     print("Informe o combustivel correto.")
-        #     return
-        # else:
-        #     tipo = "Agua"
-        #     if comb in self.combListName.keys():
-        #         tipo = self.nome_exibicao[self.combListName[comb]]
-        #     elif comb in self.combListName.values():
-        #         tipo = self.nome_exibicao[comb]
-        #     else:
-        #         print("error")
-                
-        #     # print(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}")
-        valor = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme o valor de combustivel a ser abastecido em R$:")
+        tipo = self.procuraComb("abastecido")           
+        valor = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme o valor de combustivel a ser abastecido em R$:")        
         total = int(valor) / self.precos[tipo]
-        
-        print(f"Foram abastecidos: {total:.3f} litros de {tipo}")
-        self.atualizaTanque(tipo, total)
-        time.sleep(2)
+        if self.confereTanque(tipo, total):        
+            print(f"Foram abastecidos: {total:.3f} litros de {tipo}")
+            self.atualizaTanque(tipo, total)
+            time.sleep(2)
+        else:
+            return
+    
+    def abastecerPorLitro(self):
+        self.banner()
+        tipo = self.procuraComb("abastecido")        
+        litros = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme a quantidade de litros a ser abastecida:")
+        total = int(litros) * self.precos[tipo]
+        if self.confereTanque(tipo, litros):
+            print(f"Foram abastecidos {litros} litros de {tipo} pelo valor de R${total:.2f}.")
+            time.sleep(2)
+            self.atualizaTanque(tipo, float(litros))
+        else:
+            return
     
     def confereTanque(self, tipo, qtd):
-        if qtd > self.tanque[tipo]:
-            print(f"Quantidade no tanque insuficiente. Quantidade atual: {self.tanque[tipo]}.")
+        if int(qtd) > self.tanque[tipo]:
+            print(f"\nQuantidade no tanque insuficiente. Quantidade atual: {self.tanque[tipo]}.")
+            time.sleep(2)
             return False
         else:
             return True
     
-    def abastecerPorLitro(self):
-        self.banner()
-        tipo = self.procuraComb("abastecido")
-        # comb = input("Informe o nome ou número do combustivel ser abastecido: ")          
-        litros = input(f"Tipo: {tipo} \nPreço por litro: {self.precos[tipo]}\nInforme a quantidade de litros a ser abastecida:")
 
-        total = int(litros) * self.precos[tipo]
-        print(f"Foram abastecidos {litros} litros de {tipo} pelo valor de R${total:.2f}.")
-        time.sleep(2)
-        self.atualizaTanque(tipo, float(litros))
-    
     def atualizaTanque(self, comb, litros):
         self.tanque[comb] -= litros
         
